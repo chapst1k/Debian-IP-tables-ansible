@@ -1,0 +1,12 @@
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+
+# Your custom iptables rules go here
+
+# Example: Allow SSH traffic
+-A INPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+-A OUTPUT -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+
+COMMIT
