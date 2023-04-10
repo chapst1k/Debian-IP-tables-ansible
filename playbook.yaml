@@ -1,0 +1,26 @@
+---
+- name: Configure iptables on Debian-based systems using a template file
+  hosts: debian
+  become: true
+  vars:
+    iptables_rules_file: "iptables_rules.j2"
+  tasks:
+    - name: Get iptables rules from template file
+      template:
+        src: "{{ iptables_rules_file }}"
+        dest: /etc/iptables/rules.v4
+
+    - name: Load iptables rules from file
+      iptables:
+        table: filter
+        chain: "{{ item }}"
+        policy: ACCEPT
+        insert: 1
+        rules: "{{ lookup('file', '/etc/iptables/rules.v4') }}"
+      with_items:
+        - INPUT
+        - OUTPUT
+        - FORWARD
+
+    - name: Save iptables rules
+      command: iptables-save > /etc/iptables/rules.v4
